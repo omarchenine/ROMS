@@ -1,0 +1,35 @@
+# OS specific files
+.DS_Store
+*._DS_Store
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+*.iml
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# Binary files
+*.zip
+*.war
+*.ear
+
+# JavaFX specific
+bin/javafx-sdk.zip
+*.jar.zip
+
+# Virtual machine crash logs
+hs_err_pid*
+*.argfile
+
+# Build directories
+target/
+build/

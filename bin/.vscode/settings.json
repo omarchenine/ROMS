@@ -1,9 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "/Users/omar/Desktop/demo/restaurant-management-system/lib/javafx-sdk-21/lib/*.jar"
-    ],
-    "java.project.sourcePaths": [
-        "."
-    ],
-    "java.project.outputPath": "bin"
-} 
