@@ -1,0 +1,197 @@
+.root {
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+  -fx-background-color: #f8f9fa;
+}
+
+/* Main color variables */
+* {
+  -main-dark: #2c3e50;
+  -main-medium: #3498db;
+  -main-light: #ecf0f1;
+  -accent-color: #e67e22;
+  -success-color: #2ecc71;
+  -warning-color: #f39c12;
+  -error-color: #e74c3c;
+  -shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.icon-button {
+  -fx-background-color: transparent;
+  -fx-background-radius: 50%;
+  -fx-padding: 5px;
+  -fx-min-width: 35px;
+  -fx-min-height: 35px;
+}
+
+.icon-button:hover {
+  -fx-background-color: -main-light;
+  -fx-cursor: hand;
+}
+
+.cart-badge {
+  -fx-background-color: -accent-color;
+  -fx-background-radius: 50%;
+  -fx-text-fill: white;
+  -fx-padding: 4px 8px;
+  -fx-font-weight: bold;
+  -fx-min-width: 16px;
+  -fx-min-height: 16px;
+  -fx-alignment: center;
+}
+
+.category-btn {
+  -fx-background-color: white;
+  -fx-background-radius: 20px;
+  -fx-padding: 8px 15px;
+  -fx-font-size: 13px;
+  -fx-text-fill: -main-dark;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 1);
+}
+
+.category-btn:hover {
+  -fx-background-color: -main-light;
+  -fx-cursor: hand;
+}
+
+.category-btn.active {
+  -fx-background-color: -main-medium;
+  -fx-text-fill: white;
+}
+
+.transparent {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+
+.transparent > .viewport {
+  -fx-background-color: transparent;
+}
+
+.menu-card {
+  -fx-background-color: white;
+  -fx-background-radius: 12px;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 8, 0, 0, 2);
+  -fx-alignment: center;
+}
+
+.menu-card .food-name {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -main-dark;
+}
+
+.menu-card .food-price {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -accent-color;
+  -fx-alignment: center-right;
+}
+
+.menu-card .food-description {
+  -fx-font-size: 12px;
+  -fx-text-fill: #7f8c8d;
+  -fx-wrap-text: true;
+}
+
+.menu-card .size-btn {
+  -fx-background-color: white;
+  -fx-border-color: #ecf0f1;
+  -fx-border-radius: 15px;
+  -fx-background-radius: 15px;
+  -fx-padding: 5px 10px;
+  -fx-font-size: 11px;
+  -fx-min-width: 60px;
+}
+
+.menu-card .size-btn:hover {
+  -fx-border-color: -main-medium;
+  -fx-cursor: hand;
+}
+
+.menu-card .size-btn.selected {
+  -fx-background-color: -main-medium;
+  -fx-text-fill: white;
+  -fx-border-color: -main-medium;
+}
+
+.menu-card .quantity-spinner {
+  -fx-background-color: white;
+  -fx-border-color: #ecf0f1;
+  -fx-border-radius: 4px;
+  -fx-pref-width: 80px;
+  -fx-alignment: center;
+}
+
+.menu-card .add-btn {
+  -fx-background-color: transparent;
+  -fx-border-color: -accent-color;
+  -fx-border-radius: 4px;
+  -fx-text-fill: -accent-color;
+  -fx-font-weight: bold;
+  -fx-min-width: 60px;
+}
+
+.menu-card .add-btn:hover {
+  -fx-background-color: -accent-color;
+  -fx-text-fill: white;
+  -fx-cursor: hand;
+}
+
+.cart-item {
+  -fx-background-color: white;
+  -fx-background-radius: 10px;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 1);
+  -fx-padding: 10px;
+  -fx-spacing: 5px;
+}
+
+.cart-item .item-name {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -main-dark;
+}
+
+.cart-item .item-size {
+  -fx-font-size: 12px;
+  -fx-text-fill: #7f8c8d;
+}
+
+.cart-item .item-price {
+  -fx-font-size: 14px;
+  -fx-text-fill: -accent-color;
+  -fx-font-weight: bold;
+  -fx-alignment: center-right;
+}
+
+.cart-item .quantity-spinner {
+  -fx-background-color: white;
+  -fx-border-color: #ecf0f1;
+  -fx-border-radius: 4px;
+  -fx-max-width: 80px;
+}
+
+.cancel-btn {
+  -fx-background-color: #ecf0f1;
+  -fx-background-radius: 8px;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-text-fill: #7f8c8d;
+}
+
+.cancel-btn:hover {
+  -fx-background-color: #d7dbdd;
+  -fx-cursor: hand;
+}
+
+.place-order-btn {
+  -fx-background-color: -accent-color;
+  -fx-background-radius: 8px;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+}
+
+.place-order-btn:hover {
+  -fx-background-color: #d35400;
+  -fx-cursor: hand;
+}
