@@ -1,3 +1,4 @@
+package ROMS;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
 
 public class AdminDashboardController implements Initializable {
     
@@ -56,8 +58,20 @@ public class AdminDashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTable();
-        setupCategoryComboBox();
+        loadCategories();
         loadMenuItems();
+        
+        // Test database connection
+        boolean connected = DatabaseConnection.testConnection();
+        if (!connected) {
+            statusLabel.setText("Warning: Database connection failed. Using sample data.");
+            statusLabel.setTextFill(Color.RED);
+        } else {
+            statusLabel.setText("Connected to database successfully");
+            statusLabel.setTextFill(Color.GREEN);
+        }
+        
+        setupCategoryComboBox();
         clearForm();
     }
     
@@ -83,22 +97,48 @@ public class AdminDashboardController implements Initializable {
         categoryComboBox.setItems(categories);
     }
     
-    private void loadMenuItems() {
-        // Load sample data from CustomerViewController's loadMenuItems method
-        menuItems.add(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "images/cappuccino-jpg-.png"));
-        menuItems.add(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "images/mushroom-pizza-jpg-.png"));
-        menuItems.add(new MenuItem(3, "Tacos Salsa", 5.95, "Mexican", "images/tacos-jpg-.png"));
-        menuItems.add(new MenuItem(4, "Meat burger", 5.95, "Burger", "images/meat-burger-jpg-.png"));
-        menuItems.add(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "images/melon-juice-jpg-.png"));
-        menuItems.add(new MenuItem(6, "Vegetable salad", 4.95, "Snack", "images/users-icon-png-vegetable-salad-jpg.png"));
-        menuItems.add(new MenuItem(7, "Black chicken Burger", 6.95, "Burger", "images/black-chicken-jpg-.png"));
-        menuItems.add(new MenuItem(8, "Bakso Kuah sapi", 5.95, "Soup", "images/bakso-jpg-.png"));
-        menuItems.add(new MenuItem(9, "Italian Pizza", 9.95, "Italian", "images/italian-pizza-jpg-.png"));
-        menuItems.add(new MenuItem(10, "Sausage Pizza", 8.95, "Italian", "images/sausage-pizza-jpg-.png"));
-        menuItems.add(new MenuItem(11, "Seafood Paella", 12.95, "Seafood", "images/seafood-paella-jpg-.png"));
-        menuItems.add(new MenuItem(12, "Ranch Burger", 7.95, "Burger", "images/ranch-burger-jpg-.png"));
+    private void loadCategories() {
+        try {
+            // Load categories from database
+            MenuItemDAO menuItemDAO = new MenuItemDAO();
+            List<String> categories = menuItemDAO.getAllCategories();
+            
+            // If database returned categories, use them
+            if (!categories.isEmpty()) {
+                categoryComboBox.getItems().clear();
+                categoryComboBox.getItems().addAll(categories);
+                return;
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading categories from database: " + e.getMessage());
+        }
         
-        menuItemsTable.setItems(menuItems);
+        // Fall back to sample categories if database fails or returns empty list
+        categoryComboBox.getItems().clear();
+        categoryComboBox.getItems().addAll("Burger", "Coffee", "Drinks", "Italian", "Mexican", "Chinese", "Hotdog", "Snack");
+    }
+    
+    private void loadMenuItems() {
+        try {
+            // Clear existing items
+            menuItems.clear();
+            
+            // Load menu items from database
+            MenuItemDAO menuItemDAO = new MenuItemDAO();
+            List<MenuItem> dbMenuItems = menuItemDAO.getAllMenuItems();
+            
+            // If database returned items, use them
+            if (!dbMenuItems.isEmpty()) {
+                menuItems.addAll(dbMenuItems);
+                menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+                return;
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading menu items from database: " + e.getMessage());
+        }
+        
+        // Fall back to sample data if database fails or returns empty list
+        loadSampleMenuItems();
     }
     
     private void populateForm(MenuItem item) {
@@ -114,67 +154,127 @@ public class AdminDashboardController implements Initializable {
     
     @FXML
     private void handleAddItem(ActionEvent event) {
-        try {
-            String name = menuNameField.getText().trim();
-            double price = Double.parseDouble(menuPriceField.getText().trim());
-            String category = categoryComboBox.getValue();
-            String imagePath = imagePathField.getText().trim();
-            
-            if (name.isEmpty() || category == null || imagePath.isEmpty()) {
-                showAlert(AlertType.ERROR, "Input Error", "Please fill all fields");
-                return;
+        if (validateInputs()) {
+            try {
+                // Create new menu item from form data
+                String name = menuNameField.getText();
+                double price = Double.parseDouble(menuPriceField.getText());
+                String category = categoryComboBox.getValue();
+                String imagePath = imagePathField.getText();
+                
+                MenuItem newItem = new MenuItem();
+                newItem.setName(name);
+                newItem.setPrice(price);
+                newItem.setCategory(category);
+                newItem.setImagePath(imagePath);
+                
+                // Add to database
+                MenuItemDAO menuItemDAO = new MenuItemDAO();
+                int newId = menuItemDAO.insertMenuItem(newItem);
+                
+                if (newId > 0) {
+                    // Database operation successful
+                    newItem.setId(newId);
+                    menuItems.add(newItem);
+                    menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+                    
+                    statusLabel.setText("Menu item added successfully with ID: " + newId);
+                    statusLabel.setTextFill(Color.GREEN);
+                    clearForm();
+                } else {
+                    // Database operation failed
+                    statusLabel.setText("Failed to add item to database. Adding to local list only.");
+                    statusLabel.setTextFill(Color.ORANGE);
+                    
+                    // Add to local list as fallback
+                    newItem.setId(getNextAvailableId());
+                    menuItems.add(newItem);
+                    menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+                }
+            } catch (Exception e) {
+                statusLabel.setText("Error: " + e.getMessage());
+                statusLabel.setTextFill(Color.RED);
             }
-            
-            MenuItem newItem = new MenuItem(nextId++, name, price, category, imagePath);
-            menuItems.add(newItem);
-            menuItemsTable.refresh();
-            
-            clearForm();
-            statusLabel.setText("Menu item added successfully");
-        } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Input Error", "Price must be a valid number");
         }
     }
     
     @FXML
     private void handleUpdateItem(ActionEvent event) {
-        if (selectedMenuItem == null) {
-            showAlert(AlertType.WARNING, "Selection Error", "No item selected");
-            return;
-        }
-        
-        try {
-            selectedMenuItem.setName(menuNameField.getText().trim());
-            selectedMenuItem.setPrice(Double.parseDouble(menuPriceField.getText().trim()));
-            selectedMenuItem.setCategory(categoryComboBox.getValue());
-            selectedMenuItem.setImagePath(imagePathField.getText().trim());
-            
-            menuItemsTable.refresh();
-            clearForm();
-            statusLabel.setText("Menu item updated successfully");
-        } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Input Error", "Price must be a valid number");
+        MenuItem selectedItem = menuItemsTable.getSelectionModel().getSelectedItem();
+        if (selectedItem != null && validateInputs()) {
+            try {
+                // Update menu item with form data
+                String name = menuNameField.getText();
+                double price = Double.parseDouble(menuPriceField.getText());
+                String category = categoryComboBox.getValue();
+                String imagePath = imagePathField.getText();
+                
+                // Update the selected item
+                selectedItem.setName(name);
+                selectedItem.setPrice(price);
+                selectedItem.setCategory(category);
+                selectedItem.setImagePath(imagePath);
+                
+                // Update in database
+                MenuItemDAO menuItemDAO = new MenuItemDAO();
+                boolean updated = menuItemDAO.updateMenuItem(selectedItem);
+                
+                if (updated) {
+                    // Database operation successful
+                    menuItemsTable.refresh();
+                    statusLabel.setText("Menu item updated successfully");
+                    statusLabel.setTextFill(Color.GREEN);
+                } else {
+                    // Database operation failed
+                    menuItemsTable.refresh();
+                    statusLabel.setText("Failed to update item in database. Updated in local list only.");
+                    statusLabel.setTextFill(Color.ORANGE);
+                }
+                
+                clearForm();
+            } catch (Exception e) {
+                statusLabel.setText("Error: " + e.getMessage());
+                statusLabel.setTextFill(Color.RED);
+            }
+        } else {
+            statusLabel.setText("Please select an item to update and provide valid inputs");
+            statusLabel.setTextFill(Color.RED);
         }
     }
     
     @FXML
     private void handleDeleteItem(ActionEvent event) {
-        if (selectedMenuItem == null) {
-            showAlert(AlertType.WARNING, "Selection Error", "No item selected");
-            return;
-        }
-        
-        Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Confirm Deletion");
-        confirmAlert.setHeaderText("Delete " + selectedMenuItem.getName());
-        confirmAlert.setContentText("Are you sure you want to delete this menu item?");
-        
-        Optional<ButtonType> result = confirmAlert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            menuItems.remove(selectedMenuItem);
-            menuItemsTable.refresh();
-            clearForm();
-            statusLabel.setText("Menu item deleted successfully");
+        MenuItem selectedItem = menuItemsTable.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            try {
+                // Delete from database first
+                MenuItemDAO menuItemDAO = new MenuItemDAO();
+                boolean deleted = menuItemDAO.deleteMenuItem(selectedItem.getId());
+                
+                if (deleted) {
+                    // Database operation successful
+                    menuItems.remove(selectedItem);
+                    menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+                    
+                    statusLabel.setText("Menu item deleted successfully");
+                    statusLabel.setTextFill(Color.GREEN);
+                } else {
+                    // Database operation failed
+                    menuItems.remove(selectedItem);
+                    menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+                    
+                    statusLabel.setText("Failed to delete from database. Removed from local list only.");
+                    statusLabel.setTextFill(Color.ORANGE);
+                }
+                
+                clearForm();
+            } catch (Exception e) {
+                statusLabel.setText("Error: " + e.getMessage());
+                statusLabel.setTextFill(Color.RED);
+            }
+        } else {
+            statusLabel.setText("Please select an item to delete");
+            statusLabel.setTextFill(Color.RED);
         }
     }
     
@@ -256,5 +356,65 @@ public class AdminDashboardController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    // Method to load sample menu items if database fails
+    private void loadSampleMenuItems() {
+        // Clear existing items
+        menuItems.clear();
+        
+        // Add sample data
+        menuItems.add(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "images/cappuccino-jpg-.png"));
+        menuItems.add(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "images/mushroom-pizza-jpg-.png"));
+        menuItems.add(new MenuItem(3, "Tacos Salsa", 5.95, "Mexican", "images/tacos-jpg-.png"));
+        menuItems.add(new MenuItem(4, "Meat burger", 5.95, "Burger", "images/meat-burger-jpg-.png"));
+        menuItems.add(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "images/melon-juice-jpg-.png"));
+        menuItems.add(new MenuItem(6, "Vegetable salad", 4.95, "Snack", "images/users-icon-png-vegetable-salad-jpg.png"));
+        menuItems.add(new MenuItem(7, "Black chicken Burger", 6.95, "Burger", "images/black-chicken-jpg-.png"));
+        menuItems.add(new MenuItem(8, "Bakso Kuah sapi", 5.95, "Soup", "images/bakso-jpg-.png"));
+        menuItems.add(new MenuItem(9, "Italian Pizza", 9.95, "Italian", "images/italian-pizza-jpg-.png"));
+        menuItems.add(new MenuItem(10, "Sausage Pizza", 8.95, "Italian", "images/sausage-pizza-jpg-.png"));
+        menuItems.add(new MenuItem(11, "Seafood Paella", 12.95, "Seafood", "images/seafood-paella-jpg-.png"));
+        menuItems.add(new MenuItem(12, "Ranch Burger", 7.95, "Burger", "images/ranch-burger-jpg-.png"));
+        
+        menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
+    }
+
+    // Method to validate inputs from form fields
+    private boolean validateInputs() {
+        if (menuNameField.getText().trim().isEmpty()) {
+            statusLabel.setText("Please enter a menu item name");
+            statusLabel.setTextFill(Color.RED);
+            return false;
+        }
+        
+        try {
+            double price = Double.parseDouble(menuPriceField.getText().trim());
+            if (price <= 0) {
+                statusLabel.setText("Please enter a valid price (greater than 0)");
+                statusLabel.setTextFill(Color.RED);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Please enter a valid price");
+            statusLabel.setTextFill(Color.RED);
+            return false;
+        }
+        
+        if (categoryComboBox.getValue() == null || categoryComboBox.getValue().trim().isEmpty()) {
+            statusLabel.setText("Please select a category");
+            statusLabel.setTextFill(Color.RED);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Method to get the next available ID for a new menu item
+    private int getNextAvailableId() {
+        return menuItems.stream()
+                .mapToInt(MenuItem::getId)
+                .max()
+                .orElse(0) + 1;
     }
 } 

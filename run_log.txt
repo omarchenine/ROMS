@@ -1,0 +1,61 @@
+warning: [options] system modules path not set in conjunction with -source 17
+Note: CustomerViewController.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+Checking images in bin directory:
+bin/images/.DS_Store
+bin/images/bakso-jpg-.png
+bin/images/black-chicken-jpg-.png
+bin/images/cappuccino-jpg-.png
+bin/images/cart-icon-png-.png
+bin/images/italian-pizza-jpg-.png
+bin/images/kitchen-icon-png-.png
+bin/images/meat-burger-jpg-.png
+bin/images/melon-juice-jpg-.png
+bin/images/menu-icon-png.png
+bin/images/mushroom-pizza-jpg-.png
+bin/images/notification-icon-png-.png
+bin/images/order-icon-png-.png
+bin/images/ranch-burger-jpg-.png
+bin/images/restaurant-logo-png-.png
+bin/images/sausage-pizza-jpg-.png
+bin/images/seafood-paella-jpg-.png
+bin/images/settings-icon-png-.png
+bin/images/table-icon-png-.png
+bin/images/tacos-jpg-.png
+bin/images/user-avatar-png-.png
+bin/images/users-icon-png-vegetable-salad-jpg.png
+Running Restaurant Operations Management System...
+Error loading FXML: 
+/Users/omar/Downloads/src/ROMS/bin/ROMS/customer_view.fxml:16
+
+javafx.fxml.LoadException: 
+/Users/omar/Downloads/src/ROMS/bin/ROMS/customer_view.fxml:16
+
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.constructLoadException(FXMLLoader.java:2722)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader$ValueElement.processAttribute(FXMLLoader.java:935)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader$InstanceDeclarationElement.processAttribute(FXMLLoader.java:983)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader$Element.processStartElement(FXMLLoader.java:230)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader$ValueElement.processStartElement(FXMLLoader.java:757)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.processStartElement(FXMLLoader.java:2853)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2649)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2563)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:3376)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:3332)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:3300)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:3272)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:3248)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader.load(FXMLLoader.java:3241)
+	at ROMS.App.start(App.java:13)
+	at javafx.graphics@21.0.2/com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$9(LauncherImpl.java:839)
+	at javafx.graphics@21.0.2/com.sun.javafx.application.PlatformImpl.lambda$runAndWait$12(PlatformImpl.java:483)
+	at javafx.graphics@21.0.2/com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at javafx.graphics@21.0.2/com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at javafx.graphics@21.0.2/com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+Caused by: java.lang.ClassNotFoundException: CustomerViewController
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	at javafx.fxml@21.0.2/javafx.fxml.FXMLLoader$ValueElement.processAttribute(FXMLLoader.java:933)
+	... 19 more

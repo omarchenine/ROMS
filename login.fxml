@@ -8,8 +8,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<VBox spacing="20" styleClass="login-container" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="loginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ROMS.loginController">
     
     <padding><Insets bottom="40" left="40" right="40" top="40" /></padding>
     
@@ -31,4 +33,4 @@
         <Label fx:id="errorLabel" styleClass="error-label" visible="false" />
     </VBox>
    <Button fx:id="customerBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-underline: true;" text="Continue as a customer" />
-</VBox>
+</AnchorPane>

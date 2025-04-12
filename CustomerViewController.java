@@ -1,3 +1,4 @@
+package ROMS;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -241,7 +242,28 @@ public class CustomerViewController implements Initializable {
         imageView.setImage(image);
     }
 
+    // Method to load menu items from the database
     private void loadMenuItems() {
+        MenuItemDAO menuItemDAO = new MenuItemDAO();
+        try {
+            // Load menu items from database
+            menuItems = menuItemDAO.getAllMenuItems();
+            
+            // If database returned no items, load sample items for testing
+            if (menuItems.isEmpty()) {
+                loadSampleMenuItems();
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading menu items from database: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Fall back to sample data if database fails
+            loadSampleMenuItems();
+        }
+    }
+    
+    // Load sample menu items for testing purposes
+    private void loadSampleMenuItems() {
         menuItems.add(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "images/cappuccino-jpg-.png"));
         menuItems.add(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "images/mushroom-pizza-jpg-.png"));
         menuItems.add(new MenuItem(3, "Tacos Salsa", 5.95, "Mexican", "images/tacos-jpg-.png"));
